@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>OldMutual.Scheme</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\OldMutual.Scheme.Application\OldMutual.Scheme.Application.csproj" />
+    <ProjectReference Include="..\OldMutual.Scheme.Domain.Tests\OldMutual.Scheme.Domain.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageReference Include="Volo.Abp.Autofac" Version="5.3.1" />
+  </ItemGroup>
+
+</Project>
