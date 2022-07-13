@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OldMutual.Scheme.EntityFrameworkCore.Repositories;
 using OldMutual.Scheme.Scheme;
@@ -30,18 +31,15 @@ namespace OldMutual.Scheme.EntityFrameworkCore;
     )]
 public class SchemeEntityFrameworkCoreModule : AbpModule
 {
- 
-
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         context.Services.AddAbpDbContext<SchemeDbContext>(options =>
         {
-                /* Remove "includeAllEntities: true" to create
-                 * default repositories only for aggregate roots */
+            /* Remove "includeAllEntities: true" to create
+             * default repositories only for aggregate roots */
             options.AddDefaultRepositories();
             options.AddRepository<Inbound_Mimo_Customer, Inbound_Mimo_CustomerRepository>();
-
-
+           
 
         });
 

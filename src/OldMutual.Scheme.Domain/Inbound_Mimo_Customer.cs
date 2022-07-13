@@ -10,9 +10,10 @@ using Volo.Abp.Domain.Entities;
 
 namespace OldMutual.Scheme
 {
-    public  class Inbound_Mimo_Customer : Entity<Guid>
+    public class Inbound_Mimo_Customer : Entity<Guid>
     {
-        [Key]
+        //public Guid Id { get; set; }
+
         [Required]
         [StringLength(40)]
         public string schemeId { get; set; }
@@ -50,7 +51,7 @@ namespace OldMutual.Scheme
         public string partyType { get; set; }
 
         [StringLength(255)]
-        public string primaryPhoneNumber { get; set;}
+        public string primaryPhoneNumber { get; set; }
 
         [Required]
         [StringLength(10)]
@@ -60,17 +61,15 @@ namespace OldMutual.Scheme
         [StringLength(50)]
         public string addressCountryCode { get; set; }
 
-     
-        public bool billGroupCombinedCollection { get; set; }
+        public bool brokerCombinedCollection { get; set; }
 
-        public string brokerCode{ get; set; }
-
-
+        [StringLength(20)]
+        public string brokerCode { get; set; }
 
 
         //-----------------------------------------------------//
-        
-         [Required]
+
+        [Required]
         public bool isBillGroup { get; set; }
 
 
@@ -81,7 +80,9 @@ namespace OldMutual.Scheme
         [StringLength(100)]
         public string billGroupName { get; set; }
 
-        public bool brokerCombinedCollection { get; set; }
+        public bool billGroupCombinedCollection { get; set; }
+
+      
 
         [Required]
         [StringLength(60)]
@@ -119,12 +120,17 @@ namespace OldMutual.Scheme
         //public CustomerScheme(Guid Id ,string  schemeid, string system, string systemCompanyId, string systemUniqueId, string customerGroupId, string primaryEmailAddress, string pinNumber, string currencyCode, string partyType, string primaryPhoneNumber, string addressDefaultRoles, string addressCountryCode, bool billGroupCombinedCollection, string brokerCode, bool isBillGroup, string billGroupNo, string billGroupName, bool brokerCombinedCollection, string customerBankAccountHolder, string customerBankAccountNumber, string customerBankBranchCode, string customerBankName, string customerCellularAccountNumber, string customerExternalMethodOfPayment, string iBanNo, string addressDescription) 
         //{
         //}
-        private Inbound_Mimo_Customer()
+        public Inbound_Mimo_Customer(Guid id)
         {
-            
+            this.Id = id;
         }
 
-        internal Inbound_Mimo_Customer(
+        public Inbound_Mimo_Customer()
+        {
+     
+        }
+
+        public Inbound_Mimo_Customer(
               Guid id
             , string schemeid
             , string system
@@ -154,7 +160,7 @@ namespace OldMutual.Scheme
             , string addressDescription
             )
         {
-            Id = id;
+            this.Id = id;
             this.schemeId = schemeid;
             this.system = system;
             this.systemCompanyId = systemCompanyId;

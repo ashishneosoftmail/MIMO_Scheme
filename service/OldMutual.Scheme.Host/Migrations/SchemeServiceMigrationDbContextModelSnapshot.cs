@@ -26,11 +26,8 @@ namespace OldMutual.Scheme.Host.Migrations
 
             modelBuilder.Entity("OldMutual.Scheme.Inbound_Mimo_Customer", b =>
                 {
-                    b.Property<string>("schemeId")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("addressCountryCode")
@@ -60,7 +57,8 @@ namespace OldMutual.Scheme.Host.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("brokerCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<bool>("brokerCombinedCollection")
                         .HasColumnType("bit");
@@ -128,6 +126,11 @@ namespace OldMutual.Scheme.Host.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("schemeId")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
                     b.Property<string>("system")
                         .IsRequired()
                         .HasMaxLength(40)
@@ -143,7 +146,7 @@ namespace OldMutual.Scheme.Host.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("schemeId");
+                    b.HasKey("Id");
 
                     b.ToTable("Inbound_Mimo_Customer", (string)null);
                 });
