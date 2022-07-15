@@ -20,116 +20,114 @@ namespace OldMutual.Scheme
         }
 
 
-        public async Task<Inbound_Mimo_Customer> CreateAsync(
-              string schemeid
-            , string system
-            , string systemCompanyId
-            , string systemUniqueId
-            , string customerGroupId
-            , string primaryEmailAddress
-            , string pinNumber
-            , string currencyCode
-            , string partyType
-            , string primaryPhoneNumber
-            , string addressDefaultRoles
-            , string addressCountryCode
-            , bool billGroupCombinedCollection
-            , string brokerCode
-            , bool isBillGroup
-            , string billGroupNo
-            , string billGroupName
-            , bool brokerCombinedCollection
-            , string customerBankAccountHolder
-            , string customerBankAccountNumber
-            , string customerBankBranchCode
-            , string customerBankName
-            , string customerCellularAccountNumber
-            , string customerExternalMethodOfPayment
-            , string iBanNo
-            , string addressDescription
-            )
+        //public async Task<Inbound_Mimo_Customer> CreateAsync(
+        //      string schemeid
+        //    , string system
+        //    , string systemCompanyId
+        //    , string systemUniqueId
+        //    , string customerGroupId
+        //    , string primaryEmailAddress
+        //    , string pinNumber
+        //    , string currencyCode
+        //    , string partyType
+        //    , string primaryPhoneNumber
+        //    , string addressDefaultRoles
+        //    , string addressCountryCode
+        //    , bool billGroupCombinedCollection
+        //    , string brokerCode
+        //    , bool isBillGroup
+        //    , string billGroupNo
+        //    , string billGroupName
+        //    , bool brokerCombinedCollection
+        //    , string customerBankAccountHolder
+        //    , string customerBankAccountNumber
+        //    , string customerBankBranchCode
+        //    , string customerBankName
+        //    , string customerCellularAccountNumber
+        //    , string customerExternalMethodOfPayment
+        //    , string iBanNo
+        //    , string addressDescription
+        //    )
+        //{
+
+        //    try
+        //    {
+        //        var objInbound = new Inbound_Mimo_Customer(
+        //               GuidGenerator.Create()
+        //                , schemeid
+        //                , system
+        //                , systemCompanyId
+        //                , systemUniqueId
+        //                , customerGroupId
+        //                , primaryEmailAddress
+        //                , pinNumber
+        //                , currencyCode
+        //                , partyType
+        //                , primaryPhoneNumber
+        //                , addressDefaultRoles
+        //                , addressCountryCode
+        //                , billGroupCombinedCollection
+        //                , brokerCode
+        //                , isBillGroup
+        //                , billGroupNo
+        //                , billGroupName
+        //                , brokerCombinedCollection
+        //                , customerBankAccountHolder
+        //                , customerBankAccountNumber
+        //                , customerBankBranchCode
+        //                , customerBankName
+        //                , customerCellularAccountNumber
+        //                , customerExternalMethodOfPayment
+        //                , iBanNo
+        //                , addressDescription
+
+        //       );
+
+        //        var oInbouound = await _IInbound_Mimo_CustomerRepository.InsertAsync(objInbound, autoSave: true);
+        //        //await _InboundRepository.ValidateInboundAsync(objInbound.System);
+        //        return oInbouound;
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw;
+        //    }
+
+        //}
+
+        //public async Task<Inbound_Mimo_Customer> CreateAsync_Bulk(List<Inbound_Mimo_Customer> input)
+        //{
+        //    var objInbound = new Inbound_Mimo_Customer();
+
+        //    DataTable dt = ListToDataTable(input);
+        //    foreach (DataRow row in dt.Rows)
+        //    {
+        //        row["Id"] = Convert.ToString(Guid.NewGuid());
+        //    }
+
+        //    //DataTable test = CreateTestTable();
+        //    var tuple = await _IInbound_Mimo_CustomerRepository.InsertSchemeAsync(dt);
+        //    bool isSuccess = tuple.Item1;
+        //    return objInbound;
+        //}
+
+
+
+
+
+        //Bulk Insert
+
+
+        public async Task<Tuple<bool, int>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input)
         {
-
-            try
-            {
-                var objInbound = new Inbound_Mimo_Customer(
-                       GuidGenerator.Create()
-                        , schemeid
-                        , system
-                        , systemCompanyId
-                        , systemUniqueId
-                        , customerGroupId
-                        , primaryEmailAddress
-                        , pinNumber
-                        , currencyCode
-                        , partyType
-                        , primaryPhoneNumber
-                        , addressDefaultRoles
-                        , addressCountryCode
-                        , billGroupCombinedCollection
-                        , brokerCode
-                        , isBillGroup
-                        , billGroupNo
-                        , billGroupName
-                        , brokerCombinedCollection
-                        , customerBankAccountHolder
-                        , customerBankAccountNumber
-                        , customerBankBranchCode
-                        , customerBankName
-                        , customerCellularAccountNumber
-                        , customerExternalMethodOfPayment
-                        , iBanNo
-                        , addressDescription
-
-               );
-
-                var oInbouound = await _IInbound_Mimo_CustomerRepository.InsertAsync(objInbound, autoSave: true);
-                //await _InboundRepository.ValidateInboundAsync(objInbound.System);
-                return oInbouound;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
-
-        public async Task<Inbound_Mimo_Customer> CreateAsync_Bulk(List<Inbound_Mimo_Customer> input)
-        {
-            var objInbound = new Inbound_Mimo_Customer();
-
-            DataTable dt = ListToDataTable(input);
-            foreach (DataRow row in dt.Rows)
-            {
-                row["Id"] = Convert.ToString(Guid.NewGuid());
-            }
-
-            //DataTable test = CreateTestTable();
-            var tuple = await _IInbound_Mimo_CustomerRepository.InsertSchemeAsync(dt);
-            bool isSuccess = tuple.Item1;
-            return objInbound;
-        }
-
-        public async Task<Tuple<bool>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input)
-        {
-            bool isSuccess = false;
-
-            //DataTable dt = ListToDataTable(input);
-            //foreach (DataRow row in dt.Rows)
-            //{
-            //    row["Id"] = Convert.ToString(Guid.NewGuid());
-            //}
-
-
-
             var tuple = await _IInbound_Mimo_CustomerRepository.InsertSchemeAsync_Bulk(input);
-            isSuccess = tuple.Item1;
 
-            return new Tuple<bool>(isSuccess);
+            return new Tuple<bool, int>(tuple.Item1, tuple.Item2);
         }
 
-        public async Task<Tuple<string, string, int>> InsertSchemeAsync_ADO(List<Inbound_Mimo_Customer> input)
+
+        //ADO-Bulk Insert
+        public async Task<Tuple<string, int, string, string>> InsertSchemeAsync_ADO(List<Inbound_Mimo_Customer> input)
         {
             DataTable dt = ListToDataTable(input);
             foreach (DataRow row in dt.Rows)
@@ -138,9 +136,12 @@ namespace OldMutual.Scheme
             }
 
             var tuple = await _IInbound_Mimo_CustomerRepository.InsertSchemeAsync_ADO(dt);
-            return new Tuple<string, string, int>(tuple.Item1,tuple.Item2, tuple.Item3);
+
+            return new Tuple<string , int, string, string>(tuple.Item1,tuple.Item2, tuple.Item3, tuple.Item4);
         }
 
+
+        //Creating ListTodataTable
         public static DataTable ListToDataTable<T>(List<T> items)
         {
             DataTable dataTable = new DataTable(typeof(T).Name);
@@ -168,6 +169,7 @@ namespace OldMutual.Scheme
             return dataTable;
         }
 
+        //Creating TestTable
         private DataTable CreateTestTable()
         {
             DataTable custTable = new DataTable("Inbound_Mimo_Customer_Test");
@@ -195,6 +197,7 @@ namespace OldMutual.Scheme
             return custTable;
         }
 
+        //Creating CreateList
         private List<Inbound_Mimo_Customer> CreateList(DataTable dt)
         {
             List<Inbound_Mimo_Customer> lstInbound_Mimo_Customer = new List<Inbound_Mimo_Customer>();

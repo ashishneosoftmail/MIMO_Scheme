@@ -1,7 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using OldMutual.Scheme.Localization;
+using OldMutual.Scheme.Validations;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
@@ -14,69 +23,133 @@ namespace OldMutual.Scheme.Controllers;
 //[Area("Schema")]
 
 [IgnoreAntiforgeryToken]
+[ApiVersion("1.0", Deprecated = true)]
+[Route("api/Scheme")]
 public class SchemeController : AbpControllerBase, ISchemeAppService
-
 {
+    private readonly IConfiguration _Configuration;
     private readonly ISchemeAppService _ISchemeAppService;
+    public readonly IHostingEnvironment _hEnvironment;
 
-    SchemeResponse schemeResponse;
-    public SchemeController(ISchemeAppService SchemeAppService)
+    SuccessResponse successResponse;
+    BadRequestResponse badRequestResponse;
+    BadRequestErrorsResponse badRequestErrorsResponse;
+    UnprocessableResponse unprocessableResponse;
+
+    public SchemeController(ISchemeAppService SchemeAppService, IConfiguration Configuration, IHostingEnvironment hEnvironment)
     {
         _ISchemeAppService = SchemeAppService;
+        _Configuration = Configuration;
+        _hEnvironment = hEnvironment;
     }
 
+    #region "Scheme Insert"
 
+    /// <summary>
+    /// This API is used to insert the scheme based on specified request
+    /// </summary>
+    /// <param name="inbound_Scheme_BillGroups"></param>
+    /// <returns></returns>
     [HttpPost]
     [UnitOfWork]
-    [Route("api/Scheme/CustomerScheme_Test")]
-    public async Task<Inbound_Mimo_CustomerDto> CreateAsync(CreateInbound_Mimo_CustomerDto createInbound_Mimo_CustomerDto)
+    public async Task<object> InsertSchemeAsync_Bulk(Inbound_Scheme_BillGroups inbound_Scheme_BillGroups)
     {
-        return await _ISchemeAppService.CreateAsync(createInbound_Mimo_CustomerDto);
+        object objResponse = null;
+        successResponse = new();
+        badRequestResponse = new();
+        unprocessableResponse = new();
+        badRequestErrorsResponse = new();
+        badRequestResponse.error = new();
+         
+        try
+        {
+            var validator = new Inbound_Mimo_Customer_Validator();
+            var results = validator.Validate(inbound_Scheme_BillGroups);
+            if (results.Errors.Count > 0)
+            {
+                List<UnprocessableErrorsResponse> errors = new();
+                foreach (var error in results.Errors)
+                {
+                    UnprocessableErrorsResponse unprocessableErrorsResponse = new();
+                    unprocessableErrorsResponse.Status = 422;
+                    unprocessableErrorsResponse.Code = error.ErrorCode;
+                    unprocessableErrorsResponse.Message = error.ErrorMessage;
+                    unprocessableErrorsResponse.Field = error.PropertyName;
+                    errors.Add(unprocessableErrorsResponse);
+                }
+
+                unprocessableResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
+                unprocessableResponse.error = errors;
+                objResponse = unprocessableResponse;
+
+                return objResponse;
+
+            }
+            else
+            {
+                BaseResponse response = (BaseResponse)await _ISchemeAppService.InsertSchemeAsync_Bulk(inbound_Scheme_BillGroups);
+
+               
+                if (response.isSuccess)
+                {
+                    successResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
+                    successResponse.Message = "Request inserted successfully";
+                    successResponse.StatusCode = response.status;
+
+                    objResponse = successResponse;
+
+                }
+                else if (!response.isSuccess)
+                {
+                    badRequestResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
+                    badRequestResponse.error.Code = "bad_request";
+                    badRequestResponse.error.Message = "incorrect_format";
+                    badRequestResponse.error.Status = Convert.ToInt32(HttpStatusCode.BadRequest);
+
+                    objResponse = badRequestResponse;
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            throw ex;           
+        }
+        return objResponse;
+
     }
 
-    [HttpPost]
-    [UnitOfWork]
-    [Route("api/Scheme/CreateAsync_Bulk")]
-    public async Task<Inbound_Mimo_CustomerDto> CreateAsync_Bulk(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
-    {
-        return await _ISchemeAppService.CreateAsync_Bulk(inbound_Scheme_BillGroups);
-    }
-
-    [HttpPost]
-    [UnitOfWork]
-    [Route("api/Scheme/CustomerScheme")]
-    public async Task<Tuple<bool, string>> CreateAsync_A(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
-    {
-        bool result = false;
-        string msg = string.Empty;
-
-        var tuple = await _ISchemeAppService.CreateAsync_A(inbound_Scheme_BillGroups);
-
-        result = tuple.Item1;
-        msg = tuple.Item2;
-
-        return new Tuple<bool, string>(result, msg);
-    }
-
-    [HttpPost]
-    [UnitOfWork]
-    [Route("api/Scheme/InsertSchemeAsync_Bulk")]
-    public async Task<Tuple<bool>> InsertSchemeAsync_Bulk(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
-    {
-        return await _ISchemeAppService.InsertSchemeAsync_Bulk(inbound_Scheme_BillGroups);
-    }
+    #endregion
 
     [HttpPost]
     [UnitOfWork]
     [Route("api/Scheme/InsertSchemeAsync_ADO")]
-    public async Task<SchemeResponse> InsertSchemeAsync_ADO(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
+    public async Task<Tuple<string, int, string, string>> InsertSchemeAsync_ADO(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
     {
-        schemeResponse = new SchemeResponse();
-        schemeResponse = await _ISchemeAppService.InsertSchemeAsync_ADO(inbound_Scheme_BillGroups);
-        
-        return schemeResponse;
+        bool result = false;
+        string msg = string.Empty;
+
+        var tuple = await _ISchemeAppService.InsertSchemeAsync_ADO(inbound_Scheme_BillGroups);
+
+        return new Tuple<string, int, string, string>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
+
     }
 
+    [NonAction]
+    public void LogWrite(StringBuilder sb, string fileName)
+    {
+        string logPath = @"C:\OldMutual\Mimo_Scheme\Mimo_Scheme\src\OldMutual.Scheme.HttpApi";
+
+        try
+        {
+            //string filePath = _hEnvironment.WebRootPath + logPath + "//" + "Log_" + DateTime.Now.ToString("ddmmyyyy") + ".txt";
+            string filePath = _hEnvironment.WebRootPath + logPath + "//" + fileName + ".txt";
+            System.IO.File.AppendAllText(filePath, sb.ToString());
+        }
+        catch (Exception ex)
+        {
+        }
+    }
 
     [HttpGet]
     [Route("all")]

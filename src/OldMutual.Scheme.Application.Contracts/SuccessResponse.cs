@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OldMutual.Scheme
 {
-    public class SchemeResponse
+    public class SuccessResponse
     {
         public string SchemeId { get; set; }
         public string Message { get; set; }

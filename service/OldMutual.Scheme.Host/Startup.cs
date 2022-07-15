@@ -1,4 +1,6 @@
-﻿namespace OldMutual.Scheme.Host
+﻿using Volo.Abp.AspNetCore.Mvc;
+
+namespace OldMutual.Scheme.Host
 {
     public class Startup
     {
@@ -12,6 +14,16 @@
             services.AddApplication<SchemeServiceHostModule>();
             services.AddControllersWithViews();
             services.AddSingleton(_configuration);
+
+            services.AddAbpApiVersioning(options =>
+            {
+                // Show neutral/versionless APIs.
+                options.UseApiBehavior = false;
+
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+           
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

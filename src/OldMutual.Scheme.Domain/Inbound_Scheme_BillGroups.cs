@@ -16,8 +16,6 @@ namespace OldMutual.Scheme
 
         public string systemUniqueId { get; set; }
 
-      
-
         public string primaryEmailAddress { get; set; }
 
         public string pinNumber { get; set; }

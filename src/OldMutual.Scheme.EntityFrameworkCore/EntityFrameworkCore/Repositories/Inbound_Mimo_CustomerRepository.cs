@@ -39,70 +39,105 @@ namespace OldMutual.Scheme.EntityFrameworkCore.Repositories
             );
         }
 
-        public async Task<Tuple<bool>> InsertSchemeAsync(DataTable dt)
+        //public async Task<Tuple<bool>> InsertSchemeAsync(DataTable dt)
+        //{
+        //    bool result = false;
+        //    try
+        //    {
+
+        //        var dbContext = await GetDbContextAsync();
+
+        //        //string str = "Hi";
+        //        //int res = await dbContext.Database.ExecuteSqlRawAsync(
+        //        //     $"Usp_InsertScheme_Test @test = '{str}'"
+        //        // );
+
+        //        int res = await dbContext.Database.ExecuteSqlRawAsync(
+        //             $"dbo.Usp_InsertScheme @UserDefineTable = {dt}"
+        //         );
+
+        //        if (res == 1)
+        //            result = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+
+        //    return new Tuple<bool>(result);
+        //}
+
+        
+        
+        public async Task<Tuple<bool, int>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input)
         {
-            bool result = false;
-            try
-            {
-
-                var dbContext = await GetDbContextAsync();
-
-                //string str = "Hi";
-                //int res = await dbContext.Database.ExecuteSqlRawAsync(
-                //     $"Usp_InsertScheme_Test @test = '{str}'"
-                // );
-
-                int res = await dbContext.Database.ExecuteSqlRawAsync(
-                     $"dbo.Usp_InsertScheme @UserDefineTable = {dt}"
-                 );
-
-                if (res == 1)
-                    result = true;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-
-            return new Tuple<bool>(result);
-        }
-
-        public async Task<Tuple<bool>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input)
-        {
-            bool result = false;
+            bool isSuccess = false;
+            int status = 0;
+            string code = string.Empty;
+            string msg = string.Empty;
             try
             {
                 var dbContext = await GetDbContextAsync();
                 //var data = dbContext.BulkInsertAsync(input, o => o.BatchTimeout = 0);
                 //await dbContext.BulkInsertAsync(input, o => o.BatchTimeout = 0); // ERROR_014: The current month trial is expired
 
-                dbContext.BulkInsert(input);
+              
+                dbContext.BulkInsert(input);                             
+                status = Convert.ToInt32(HttpStatusCode.OK);
 
-                //using (var transactionScope = new TransactionScope())
+                if (status == 200)
+                    isSuccess = true;
+                else
+                    isSuccess = false;
+
+               
+                //else if (status == 400)
                 //{
-                //    var dbContext = await GetDbContextAsync();
-                //    dbContext.BulkInsert(input);
-                //    dbContext.SaveChanges();
-                //    transactionScope.Complete();
-
+                //    code = "bad_request";
+                //    msg = "Request not accepted";
                 //}
-
-                result = true;
+                //else if (status == 401)
+                //{
+                //    code = "unauthorized";
+                //    msg = "Request not accepted";
+                //}
+                //else if (status == 403)
+                //{
+                //    code = "forbidden";
+                //    msg = "Request not accepted";
+                //}
+                //else if (status == 422)
+                //{
+                //    code = "invalid_format";
+                //    msg = "Request not accepted";
+                //}
+                //else if (status == 500)
+                //{
+                //    code = "internal_server_error";
+                //    msg = "Request not accepted";
+                //}
+                
+               
+                return new Tuple<bool, int>(isSuccess, status);
             }
             catch (Exception ex)
             {
-                throw;
-            }
-
-
-            return new Tuple<bool>(result);
+                status = 0;
+                return new Tuple<bool, int>(isSuccess, status);
+            }           
         }
 
-        public async Task<Tuple<string, string, int>> InsertSchemeAsync_ADO(DataTable dt)
+       
+
+        //using ADO Bulk Insert
+        public async Task<Tuple<string,int, string, string>> InsertSchemeAsync_ADO(DataTable dt)
         {
             string schemeId = string.Empty;
+            //present in list of code
+            int status = 0;
+            string code = string.Empty;
             string msg = string.Empty;
-            int statusCode = 0;
+            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 try
@@ -115,17 +150,22 @@ namespace OldMutual.Scheme.EntityFrameworkCore.Repositories
                         cmd.Connection = conn;
                         cmd.ExecuteNonQuery();
                         schemeId = Convert.ToString(dt.Rows[0]["SchemeId"]);
-                        msg = "Scheme inserted successful";
-                        statusCode = Convert.ToInt32(HttpStatusCode.OK);
+                        msg = "Request accepted successfully";
+                        code = "";
+                        status = Convert.ToInt32(HttpStatusCode.OK);
                         conn.Close();
                     }
-                    return new Tuple<string, string, int>(schemeId, msg, statusCode);
+
+                   
+
+                    return new Tuple<string, int, string, string> (schemeId, status, code, msg);
                 }
                 catch (Exception ex)
                 {
                     msg = "Something went wrong";
-                    statusCode = Convert.ToInt32(HttpStatusCode.BadRequest);
-                    return new Tuple<string, string, int>(schemeId, msg, statusCode);
+                    code = "bad-request";
+                    status = Convert.ToInt32(HttpStatusCode.BadRequest);
+                    return new Tuple<string, int, string, string> (schemeId, status, code, msg);
                 }
             }
         }

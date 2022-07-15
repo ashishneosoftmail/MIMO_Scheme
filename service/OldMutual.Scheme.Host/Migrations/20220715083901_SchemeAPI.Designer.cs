@@ -13,7 +13,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace OldMutual.Scheme.Host.Migrations
 {
     [DbContext(typeof(SchemeServiceMigrationDbContext))]
-    [Migration("20220707084623_Scheme API")]
+    [Migration("20220715083901_SchemeAPI")]
     partial class SchemeAPI
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace OldMutual.Scheme.Host.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.SqlServer)
-                .HasAnnotation("ProductVersion", "6.0.5")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);

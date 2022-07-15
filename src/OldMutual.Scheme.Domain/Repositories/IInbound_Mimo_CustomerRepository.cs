@@ -12,11 +12,13 @@ namespace OldMutual.Scheme.Repositories
     {
         Task ValidateInboundAsync(string type);
 
-        Task<Tuple<bool>> InsertSchemeAsync(DataTable type);
+       // Task<Tuple<bool>> InsertSchemeAsync(DataTable type);
 
-        Task<Tuple<bool>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input);
+        Task<Tuple<bool, int>> InsertSchemeAsync_Bulk(List<Inbound_Mimo_Customer> input);
 
-        Task<Tuple<string, string, int>> InsertSchemeAsync_ADO(DataTable dt);
+
+        //ado-bulk insert
+        Task<Tuple<string, int, string, string>> InsertSchemeAsync_ADO(DataTable dt);
     }
 }
 
