@@ -44,7 +44,7 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
         _hEnvironment = hEnvironment;
     }
 
-    #region "Scheme Insert"
+    #region "Scheme Insert Entity Framework bulk insert"
 
     /// <summary>
     /// This API is used to insert the scheme based on specified request
@@ -121,6 +121,13 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
 
     #endregion
 
+    #region "Scheme insert using ADO table type"
+
+    /// <summary>
+    /// Insert scheme using ADO table type
+    /// </summary>
+    /// <param name="inbound_Scheme_BillGroups"></param>
+    /// <returns></returns>
     [HttpPost]
     [UnitOfWork]
     [Route("api/Scheme/InsertSchemeAsync_ADO")]
@@ -129,6 +136,8 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
         var tuple = await _ISchemeAppService.InsertSchemeAsync_ADO(inbound_Scheme_BillGroups);
         return new Tuple<string, int, string, string>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
     }
+
+    #endregion
 
     [NonAction]
     public void LogWrite(StringBuilder sb, string fileName)
