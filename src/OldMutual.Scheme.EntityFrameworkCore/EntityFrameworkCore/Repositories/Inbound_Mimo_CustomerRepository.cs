@@ -80,7 +80,6 @@ namespace OldMutual.Scheme.EntityFrameworkCore.Repositories
                 var dbContext = await GetDbContextAsync();
                 //var data = dbContext.BulkInsertAsync(input, o => o.BatchTimeout = 0);
                 //await dbContext.BulkInsertAsync(input, o => o.BatchTimeout = 0); // ERROR_014: The current month trial is expired
-
               
                 dbContext.BulkInsert(input);                             
                 status = Convert.ToInt32(HttpStatusCode.OK);
@@ -88,35 +87,7 @@ namespace OldMutual.Scheme.EntityFrameworkCore.Repositories
                 if (status == 200)
                     isSuccess = true;
                 else
-                    isSuccess = false;
-
-               
-                //else if (status == 400)
-                //{
-                //    code = "bad_request";
-                //    msg = "Request not accepted";
-                //}
-                //else if (status == 401)
-                //{
-                //    code = "unauthorized";
-                //    msg = "Request not accepted";
-                //}
-                //else if (status == 403)
-                //{
-                //    code = "forbidden";
-                //    msg = "Request not accepted";
-                //}
-                //else if (status == 422)
-                //{
-                //    code = "invalid_format";
-                //    msg = "Request not accepted";
-                //}
-                //else if (status == 500)
-                //{
-                //    code = "internal_server_error";
-                //    msg = "Request not accepted";
-                //}
-                
+                    isSuccess = false;  
                
                 return new Tuple<bool, int>(isSuccess, status);
             }

@@ -61,9 +61,10 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
         unprocessableResponse = new();
         badRequestErrorsResponse = new();
         badRequestResponse.error = new();
-         
+
         try
         {
+            // Validation erros [required_field,invalid_format,length_exceeded], status code: 422
             var validator = new Inbound_Mimo_Customer_Validator();
             var results = validator.Validate(inbound_Scheme_BillGroups);
             if (results.Errors.Count > 0)
@@ -84,12 +85,12 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
                 objResponse = unprocessableResponse;
 
                 return objResponse;
-
             }
             else
             {
                 BaseResponse response = (BaseResponse)await _ISchemeAppService.InsertSchemeAsync_Bulk(inbound_Scheme_BillGroups);
-               
+
+                // if success, status code: 200
                 if (response.isSuccess)
                 {
                     successResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
@@ -99,7 +100,7 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
                     objResponse = successResponse;
 
                 }
-                else if (!response.isSuccess)
+                else if (!response.isSuccess) // bad_request, status code: 400 
                 {
                     badRequestResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
                     badRequestResponse.error.Code = "bad_request";
@@ -109,14 +110,17 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
                     objResponse = badRequestResponse;
                 }
             }
-
         }
         catch (Exception ex)
         {
-            throw ex;           
+            // internal_server_error, status code: 500 
+            badRequestResponse.SchemeId = inbound_Scheme_BillGroups.schemeId;
+            badRequestResponse.error.Code = "internal_server_error";
+            badRequestResponse.error.Message = "There was an internal server error";
+            badRequestResponse.error.Status = Convert.ToInt32(HttpStatusCode.InternalServerError);
+            objResponse = badRequestResponse;
         }
         return objResponse;
-
     }
 
     #endregion
