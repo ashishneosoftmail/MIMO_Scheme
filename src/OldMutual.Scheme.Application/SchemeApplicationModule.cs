@@ -7,7 +7,8 @@ namespace OldMutual.Scheme;
 
 [DependsOn(
     typeof(SchemeDomainModule),
-    typeof(SchemeApplicationContractsModule)   
+    typeof(SchemeApplicationContractsModule),
+    typeof(AbpAutoMapperModule)
     )]
 public class SchemeApplicationModule : AbpModule
 {

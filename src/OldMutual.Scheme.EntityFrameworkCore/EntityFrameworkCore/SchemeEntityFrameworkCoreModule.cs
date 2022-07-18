@@ -7,7 +7,6 @@ using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore.SqlServer;
-using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
 
@@ -15,10 +14,7 @@ namespace OldMutual.Scheme.EntityFrameworkCore;
 
 [DependsOn(
     typeof(SchemeDomainModule),
-    typeof(AbpEntityFrameworkCoreSqlServerModule),
-    typeof(AbpBackgroundJobsEntityFrameworkCoreModule),
-    typeof(AbpAuditLoggingEntityFrameworkCoreModule),
-    typeof(AbpFeatureManagementEntityFrameworkCoreModule)
+    typeof(AbpEntityFrameworkCoreSqlServerModule)   
     )]
 public class SchemeEntityFrameworkCoreModule : AbpModule
 {

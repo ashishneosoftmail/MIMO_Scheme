@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Uow;
+using OldMutual.Scheme.Responses;
 
 namespace OldMutual.Scheme.Controllers;
 
@@ -24,7 +25,7 @@ namespace OldMutual.Scheme.Controllers;
 
 [IgnoreAntiforgeryToken]
 [ApiVersion("1.0", Deprecated = true)]
-[Route("api/Scheme")]
+[Route("api/v1/Scheme")]
 public class SchemeController : AbpControllerBase, ISchemeAppService
 {
     private readonly IConfiguration _Configuration;
@@ -88,7 +89,6 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
             else
             {
                 BaseResponse response = (BaseResponse)await _ISchemeAppService.InsertSchemeAsync_Bulk(inbound_Scheme_BillGroups);
-
                
                 if (response.isSuccess)
                 {
@@ -126,13 +126,8 @@ public class SchemeController : AbpControllerBase, ISchemeAppService
     [Route("api/Scheme/InsertSchemeAsync_ADO")]
     public async Task<Tuple<string, int, string, string>> InsertSchemeAsync_ADO(List<Inbound_Scheme_BillGroups> inbound_Scheme_BillGroups)
     {
-        bool result = false;
-        string msg = string.Empty;
-
         var tuple = await _ISchemeAppService.InsertSchemeAsync_ADO(inbound_Scheme_BillGroups);
-
         return new Tuple<string, int, string, string>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
-
     }
 
     [NonAction]

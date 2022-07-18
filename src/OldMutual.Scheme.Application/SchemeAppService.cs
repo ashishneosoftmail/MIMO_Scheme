@@ -8,6 +8,7 @@ using OldMutual.Scheme.Validations;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using OldMutual.Scheme.Responses;
 
 namespace OldMutual.Scheme;
 
@@ -18,20 +19,16 @@ public class SchemeAppService : ApplicationService, ISchemeAppService
     private readonly Inbound_Mimo_Customer_Manager _inbound_Mimo_Customer_Manager;
     private readonly IRepository<Inbound_Mimo_Customer, Guid> _inbound_Mimo_CustomerRepository;
 
-    //private readonly Inbound_Mimo_Customer _inbound_Mimo_CustomerRepository;
     SuccessResponse schemeResponse;
     BadRequestResponse badRequestResponse;
     BadRequestErrorsResponse badRequestErrorsResponse;
 
     public SchemeAppService(Inbound_Mimo_Customer_Manager inbound_Mimo_CustomerManager, IRepository<Inbound_Mimo_Customer, Guid> inbound_Mimo_CustomerRepository)
-    //public SchemeAppService(Inbound_Mimo_Customer_Manager inbound_Mimo_CustomerManager, Inbound_Mimo_Customer inbound_Mimo_CustomerRepository)
-    {
+      {
         _inbound_Mimo_Customer_Manager = inbound_Mimo_CustomerManager;
         _inbound_Mimo_CustomerRepository = inbound_Mimo_CustomerRepository;
         ObjectMapperContext = typeof(SchemeApplicationModule);
     }
-
-
 
     //public async Task<Inbound_Mimo_CustomerDto> CreateAsync(CreateInbound_Mimo_CustomerDto input)
     //{
@@ -205,7 +202,6 @@ public class SchemeAppService : ApplicationService, ISchemeAppService
 
     public async Task<object> InsertSchemeAsync_Bulk(Inbound_Scheme_BillGroups input)
     {
-        //dynamic objDynamic = null;
         BaseResponse baseResponse = new();
         List<Inbound_Mimo_Customer> lstInbound_Mimo_Customer = new List<Inbound_Mimo_Customer>();
 
@@ -243,56 +239,24 @@ public class SchemeAppService : ApplicationService, ISchemeAppService
             lstInbound_Mimo_Customer.Add(inbound_Mimo_Customer);
         }
 
-
         var tuple = await _inbound_Mimo_Customer_Manager.InsertSchemeAsync_Bulk(lstInbound_Mimo_Customer);
         baseResponse.isSuccess = tuple.Item1;
-        baseResponse.status = tuple.Item2;
-        //objDynamic = baseResponse;
+        baseResponse.status = tuple.Item2;       
         return baseResponse; 
-        //if (tuple.Item2 == 200)
-        //{
-        //    schemeResponse = new();
-        //    schemeResponse.SchemeId = tuple.Item1;
-        //    schemeResponse.StatusCode = tuple.Item2;
-        //    schemeResponse.Message = tuple.Item4;
-        //    dynamic = schemeResponse;
-        //}
-        //else if (tuple.Item2 == 400 || tuple.Item2 == 403 || tuple.Item2 == 401 || tuple.Item2 == 500)
-        //{
-
-        //    badRequestResponse = new();
-        //    badRequestErrorsResponse = new();
-        //    badRequestResponse.error = new();
-        //    badRequestResponse.SchemeId = tuple.Item1;
-        //    badRequestResponse.error.Code = tuple.Item3;
-        //    badRequestResponse.error.Status = tuple.Item2;
-        //    badRequestResponse.error.Message = tuple.Item4;
-
-        //    dynamic = badRequestResponse;
-
-        //}
-        //return dynamic;
+        
     }
 
 
     //Bulk Insert using ADO
     public async Task<Tuple<string, int, string, string>> InsertSchemeAsync_ADO(List<Inbound_Scheme_BillGroups> input)
-    {
-        //BadRequestResponse badRequestResponse = new BadRequestResponse();
-        string SchemeId = string.Empty;
-        int Status = 0;
-        string Code = string.Empty;
-        string Message = string.Empty;
-
-
+    {       
         List<Inbound_Mimo_Customer> lstInbound_Mimo_Customer = new List<Inbound_Mimo_Customer>();
 
         for (int i = 0; i < input.Count; i++)
         {
             foreach (var obj in input[i].billGroups)
             {
-                Inbound_Mimo_Customer inbound_Mimo_Customer = new Inbound_Mimo_Customer();
-                //inbound_Mimo_Customer.Id = GuidGenerator.Create();
+                Inbound_Mimo_Customer inbound_Mimo_Customer = new Inbound_Mimo_Customer();              
                 inbound_Mimo_Customer.system = input[i].system;
                 inbound_Mimo_Customer.schemeId = input[i].schemeId;
                 inbound_Mimo_Customer.systemCompanyId = input[i].systemCompanyId;
@@ -325,16 +289,9 @@ public class SchemeAppService : ApplicationService, ISchemeAppService
             }
         }
 
-        var tuple = await _inbound_Mimo_Customer_Manager.InsertSchemeAsync_ADO(lstInbound_Mimo_Customer);
+        var tuple = await _inbound_Mimo_Customer_Manager.InsertSchemeAsync_ADO(lstInbound_Mimo_Customer);        
 
-        //badRequestResponse.SchemeId = tuple.Item1;
-
-        ////list
-        //badRequestResponse.Status = tuple.Item2;
-        //badRequestResponse.Code = tuple.Item3;
-        //badRequestResponse.Message = tuple.Item4;
-
-        return new Tuple<string, int, string, string>(SchemeId, Status, Code, Message);
+        return new Tuple<string, int, string, string>(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
 
     }
 
